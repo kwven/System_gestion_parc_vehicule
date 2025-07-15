@@ -149,8 +149,7 @@ class ChefParc(models.Model):
     NIVEAU_AUTORITE_CHOICES = [
     ('Local', 'Local'),
     ('Multi-sites', 'Multi-sites'),
-    ('Régional', 'Régional'),
-    ]
+    ('Régional', 'Régional'),]
     niveau_autorite = models.CharField(max_length=50,choices=NIVEAU_AUTORITE_CHOICES,null=True,blank=True,verbose_name="Niveau d'autorité")
     formation_securite = models.BooleanField(default=False,verbose_name="Formation sécurité")
     class Meta:
@@ -271,7 +270,7 @@ class Deplacement(models.Model):
         ordering = ['-dateDepart']
         verbose_name = 'Déplacement'
         verbose_name_plural = 'Déplacements'
-        # Contraintes CHECK (gérées par null=False, blank=False, choices)
+    # Contraintes CHECK (gérées par null=False, blank=False, choices)
     def __str__(self):
         return f"Déplacement vers {self.destination} ({self.statut})"
     def clean(self):
