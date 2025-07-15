@@ -17,7 +17,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -29,8 +28,15 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+#utiliser l'email comme USERNAME_FIELD
+AUTH_USER_MODEL = 'authentication.User'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+USERNAME_FIELD = 'email'
+REQUIRED_FIELDS = []
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -86,7 +92,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Moteur de base de données PostgreSQL
         'NAME': os.environ.get('DB_NAME', 'parc_vehicule'), # Nom de la base de données, via variable d'environnement
-        'USER': os.environ.get('DB_USER', 'parc_user'), # Utilisateur de la base de données
+        'USER': os.getenv('DB_USER', 'parc_user'), 
         'PASSWORD': os.environ.get('DB_PASSWORD', 'parc_password'), # Mot de passe de l'utilisateur
         'HOST': os.environ.get('DB_HOST', 'db'), # L'hôte de la base de données. 'db' est le nom du service dans docker-compose.yml
         'PORT': os.environ.get('DB_PORT', '5432'), # Port de PostgreSQL
