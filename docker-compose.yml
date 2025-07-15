@@ -5,17 +5,18 @@ services:
     image: postgres:15-alpine
     container_name: parc_vehicule_db
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: parc_vehicule
+      POSTGRES_USER: parc_user
+      POSTGRES_PASSWORD: parc_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      #- ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
       - parc_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $`{DB_USER} -d `${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U parc_user -d parc_vehicule"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,10 +28,10 @@ services:
       dockerfile: Dockerfile
     container_name: parc_vehicule_backend
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - DATABASE_URL=postgresql://parc_user:parc_password@db:5432/parc_vehicule
       - DEBUG=True
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - SECRET_KEY=django-insecure-btn(r0^(51qrn+_4oti^5++p9)yky1%tb*(wqcvao3qb9&#_rl
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
       - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
     volumes:
       - ./backend:/app
@@ -47,23 +48,23 @@ services:
           python manage.py runserver 0.0.0.0:8000"
 
   # Frontend React
-#  frontend:
-#    build:
-#      context: ./frontend
- #     dockerfile: Dockerfile
- #   container_name: parc_vehicules_frontend
- #   environment:
- #     - REACT_APP_API_URL=http://localhost:8000/api
- #     - CHOKIDAR_USEPOLLING=true
- #   volumes:
- #     - ./frontend:/app
- #     - /app/node_modules # Empêche l'écrasement de node_modules par le volume
- #   ports:
- #     - "3000:3000"
-#    depends_on:
- #     - backend
- #   networks:
-#      - parc_network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: parc_vehicules_frontend
+    environment:
+     - REACT_APP_API_URL=http://localhost:8000/api
+     - CHOKIDAR_USEPOLLING=true
+    volumes:
+     - ./frontend:/app
+     - /app/node_modules # Empêche l'écrasement de node_modules par le volume
+    ports:
+     - "3000:3000"
+    depends_on:
+     - backend
+    networks:
+     - parc_network
 
 volumes:
   postgres_data:
