@@ -13,19 +13,12 @@ class Agent(models.Model):
     validators=[
     RegexValidator(r'^[A-Za-z0-9]+$', 'Le matricule doit contenir uniquement des lettres et des chiffres.'),
     RegexValidator(r'^\S+$', 'Le matricule ne doit pas contenirnd\'espaces.'),])
-    nom = models.CharField(max_length=100, null=False, blank=False,
-    verbose_name="Nom")
-    prenom = models.CharField(max_length=100, null=False, blank=False,
-    verbose_name="Prénom")
-    email = models.EmailField(max_length=100,unique=True,null=True,
-    blank=True, # Email peut être NULL dans SQL, mais unique s'il est présent
-    verbose_name="Email",
-    validators=[EmailValidator()])
+    nom = models.CharField(max_length=100, null=False, blank=False,verbose_name="Nom")
+    prenom = models.CharField(max_length=100, null=False, blank=False,verbose_name="Prénom")
+    email = models.EmailField(max_length=100,unique=True,null=True,blank=True,verbose_name="Email",validators=[EmailValidator()])
     date_affectation = models.DateField(null=False,default=timezone.now,verbose_name="Date d'affectation")
-    motdepasse = models.CharField(max_length=100, null=False, blank=False,
-    verbose_name="Mot de passe") # À hasher en production
-    role = models.CharField(max_length=50, null=True, blank=True,
-    verbose_name="Rôle fonctionnel") # VARCHAR(50)
+    motdepasse = models.CharField(max_length=100, null=False, blank=False,verbose_name="Mot de passe") # À hasher en production
+    role = models.CharField(max_length=50, null=True, blank=True,verbose_name="Rôle fonctionnel") # VARCHAR(50)
     entite = models.ForeignKey('core.Entite',on_delete=models.RESTRICT,null=False,blank=False,related_name='agents',verbose_name="Entité d'affectation")
     date_creation = models.DateTimeField(auto_now_add=True, verbose_name="Date de création") 
     date_modification = models.DateTimeField(auto_now=True, verbose_name="Date de dernière modification")
@@ -54,8 +47,7 @@ class User(AbstractUser):
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Lien OneToOne avec le modèle Agent pour les informations métier
     # Un Agent peut être associé à un compte utilisateur pour la connexion
-    agent = models.OneToOneField(
-    Agent,
+    agent = models.OneToOneField(Agent,
     on_delete=models.CASCADE, # Si l'agent est supprimé, le compte utilisateur l'est aussi
     null=True,
     blank=True,
@@ -64,14 +56,6 @@ class User(AbstractUser):
     )
     # Le champ 'email' est déjà présent dans AbstractUser, mais nous le rendons unique
     email = models.EmailField(unique=True, verbose_name="Adresse email de connexion")
-    # Si vous voulez utiliser l'email comme USERNAME_FIELD, décommentez les lignes suivantes dans settings.py
-    # AUTH_USER_MODEL = 'authentication.User'
-    # ACCOUNT_AUTHENTICATION_METHOD = 'email'
-    # ACCOUNT_EMAIL_REQUIRED = True
-    # ACCOUNT_USERNAME_REQUIRED = False
-    # ACCOUNT_EMAIL_VERIFICATION = 'optional'
-    # USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = []
     class Meta:
         db_table = 'authentication_user'
         verbose_name = 'Utilisateur'
