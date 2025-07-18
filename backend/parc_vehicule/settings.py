@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-
+from decouple import config, Csv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,22 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-btn(r0^(51qrn+_4oti^5++p9)yky1%tb*(wqcvao3qb9&#_rl')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-
-#utiliser l'email comme USERNAME_FIELD
-AUTH_USER_MODEL = 'authentication.User'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
-USERNAME_FIELD = 'email'
-REQUIRED_FIELDS = []
-
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,13 +32,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Applications tierces (Third-party apps)
+
     'rest_framework', # Pour construire des APIs RESTful
     'corsheaders', # Pour gérer les requêtes Cross-Origin (CORS), essentiel pour le frontend React
     'rest_framework_simplejwt', # Pour l'authentification basée sur les tokens JWT
-    # Mes applications (My apps)
-    'core', # Votre application pour la logique métier principale
-    'authentication', # Votre application pour la gestion de l'authentification et des utilisateurs
+    # Mes applications
+    'core',
+    'authentication', 
 ]
 
 MIDDLEWARE = [
@@ -90,12 +77,12 @@ WSGI_APPLICATION = 'parc_vehicule.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Moteur de base de données PostgreSQL
-        'NAME': os.environ.get('DB_NAME', 'parc_vehicule'), # Nom de la base de données, via variable d'environnement
-        'USER': os.getenv('DB_USER', 'parc_user'), 
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'parc_password'), # Mot de passe de l'utilisateur
-        'HOST': os.environ.get('DB_HOST', 'db'), # L'hôte de la base de données. 'db' est le nom du service dans docker-compose.yml
-        'PORT': os.environ.get('DB_PORT', '5432'), # Port de PostgreSQL
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -176,7 +163,7 @@ SIMPLE_JWT = {
 'ISSUER': None,
 'JWK_URL': None,
 'LEEWAY': 0,
-'AUTH_HEADER_TYPES': ('Bearer',), # Type d'en-tête d'authentification (ex: Authorization: Bearer <token>)
+'AUTH_HEADER_TYPES': ('Bearer',), # Type d'en-tête d'authentification
 'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
 'USER_ID_FIELD': 'id',
 'USER_ID_CLAIM': 'user_id',
