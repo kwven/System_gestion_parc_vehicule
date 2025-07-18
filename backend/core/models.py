@@ -1,9 +1,7 @@
 from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator,MaxValueValidator
+from django.core.validators import MinValueValidator,MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-import uuid
-from authentication.models import Agent 
 
 # --- 1. Hiérarchie géographique ---
 # Correspond à la table Region
@@ -95,7 +93,7 @@ class Parc(models.Model):
         return f"Parc à {self.localisation} ({self.localite.nom})"
     
 # --- 3. Ressources humaines (Spécialisations d'Agent) ---
-# Ces modèles ont une relation OneToOne avec Agent (héritage par proxy ou multi-table)
+# Ces modèles ont une relation OneToOne avec Agent 
 # Ici, nous utilisons l'héritage multi-table en Django, où chaque spécialisation a sa propre table et une FK vers la PK de Agent.
 
 # Correspond à la table Responsable
@@ -133,7 +131,6 @@ class Chauffeur(models.Model):
         db_table = 'core_chauffeur'
         verbose_name = 'Chauffeur'
         verbose_name_plural = 'Chauffeurs'
-    # Contraintes CHECK (gérées par null=False, blank=False, choices, et validateurs)
     def __str__(self):
         return f"Chauffeur {self.agent.nom} {self.agent.prenom}"
     def clean(self):
@@ -178,16 +175,15 @@ class Vehicule(models.Model):
     type = models.CharField(max_length=50,choices=TYPE_CHOICES,null=True,blank=True,verbose_name="Type de véhicule")
     isDisponible = models.BooleanField(default=True, verbose_name="Estdisponible") 
     dateAcquisition = models.DateField(null=True, blank=True,verbose_name="Date d'acquisition")
-    kilometrage = models.IntegerField(default=0,verbose_name="Kilométrage",validators=[MinValueValidator(0)])
-    date_creation = models.DateField(default=timezone.now, verbose_name="Date de création") 
-    date_modification = models.DateField(default=timezone.now,verbose_name="Date de dernière modification")
+    kilometrage = models.IntegerField(default=0.00,verbose_name="Kilométrage",validators=[MinValueValidator(0)])
+    date_creation = models.DateTimeField(auto_now_add=True, verbose_name="Date de création") 
+    date_modification = models.DateTimeField(auto_now=True,verbose_name="Date de dernière modification")
     est_actif = models.BooleanField(default=True, verbose_name="Est actif") 
     class Meta:
         db_table = 'core_vehicule'
         ordering = ['immatriculation']
         verbose_name = 'Véhicule'
         verbose_name_plural = 'Véhicules'
-    # Contraintes CHECK (gérées par null=False, blank=False, choices, et validateurs)
     def __str__(self):
         return f"{self.marque} {self.modele} ({self.immatriculation})"
     def clean(self):
@@ -195,7 +191,6 @@ class Vehicule(models.Model):
         if self.dateAcquisition and self.dateAcquisition > timezone.now().date():
             raise ValidationError({'dateAcquisition': "La date d'acquisition ne peut pas être dans le futur."})
     def save(self, *args, **kwargs):
-        self.date_modification = timezone.now().date()
         super().save(*args, **kwargs)
 
 # Correspond à la table TypeCout
@@ -219,7 +214,6 @@ class TypeCout(models.Model):
         ordering = ['nom']
         verbose_name = 'Type de Coût'
         verbose_name_plural = 'Types de Coûts'
-        # Contraintes CHECK (gérées par null=False, blank=False, choices)
     def __str__(self):
         return self.nom
 
@@ -239,7 +233,6 @@ class CoutVehicule(models.Model):
         ordering = ['-date_cout']
         verbose_name = 'Coût Véhicule'
         verbose_name_plural = 'Coûts Véhicules'
-        # Contraintes CHECK (gérées par validateurs)
     def __str__(self):
         return f"Coût {self.type_cout.nom} de {self.montant} pour {self.vehicule.immatriculation}"
     def clean(self):
@@ -286,9 +279,9 @@ class UtilisationVehicule(models.Model):
     id = models.AutoField(primary_key=True)
     deplacement = models.ForeignKey(Deplacement,on_delete=models.CASCADE,null=False,blank=False,related_name='utilisations_vehicule',verbose_name="Déplacement")
     vehicule = models.ForeignKey(Vehicule,on_delete=models.RESTRICT,null=False,blank=False,related_name='utilisations',verbose_name="Véhicule")
-    carburant = models.DecimalField(max_digits=10,decimal_places=2,default=0.0,verbose_name="Carburant",validators=[MinValueValidator(0.00)])
-    peages = models.DecimalField(max_digits=10,decimal_places=2,default=0.0,verbose_name="Péages",validators=[MinValueValidator(0.00)])
-    kilometres_parcourus = models.IntegerField(null=True,blank=True,verbose_name="Kilomètres parcourus",validators=[MinValueValidator(0)])
+    carburant = models.DecimalField(max_digits=10,decimal_places=2,default=0.00,verbose_name="Carburant",validators=[MinValueValidator(0.00)])
+    peages = models.DecimalField(max_digits=10,decimal_places=2,default=0.00,verbose_name="Péages",validators=[MinValueValidator(0.00)])
+    kilometres_parcourus = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True,verbose_name="Kilomètres parcourus",validators=[MinValueValidator(0.00)])
     heure_debut = models.DateTimeField(null=True, blank=True,verbose_name="Heure de début")
     heure_fin = models.DateTimeField(null=True, blank=True, verbose_name="Heure de fin")
     class Meta:
@@ -383,7 +376,7 @@ class DeplacementAgent(models.Model):
 class DeplacementChauffeur(models.Model):
     deplacement = models.ForeignKey(Deplacement,on_delete=models.CASCADE, null=False,blank=False,verbose_name="Déplacement")
     chauffeur = models.ForeignKey(Chauffeur,on_delete=models.CASCADE,null=False,blank=False,verbose_name="Chauffeur")
-    heures_conduite = models.DecimalField(max_digits=5,decimal_places=2,default=0.0,verbose_name="Heures de conduite",validators=[MinValueValidator(0.0), MaxValueValidator(24.0)])
+    heures_conduite = models.DecimalField(max_digits=5,decimal_places=2,default=0.00,verbose_name="Heures de conduite",validators=[MinValueValidator(0.00), MaxValueValidator(24.00)])
     est_principal = models.BooleanField(default=False, verbose_name="Estprincipal") 
     class Meta:
         db_table = 'core_deplacement_chauffeur'
