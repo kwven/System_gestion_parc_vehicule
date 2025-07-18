@@ -6,9 +6,9 @@ services:
     container_name: parc_vehicule_db
     env_file: .env
     environment:
-      POSTGRES_DB: parc_vehicule
-      POSTGRES_USER: parc_user
-      POSTGRES_PASSWORD: parc_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       #- ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -17,7 +17,7 @@ services:
     networks:
       - parc_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U parc_user -d parc_vehicule"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,11 +30,11 @@ services:
     container_name: parc_vehicule_backend
     env_file: .env
     environment:
-      - DATABASE_URL=postgresql://parc_user:parc_password@db:5432/parc_vehicule
-      - DEBUG=True
-      - SECRET_KEY=django-insecure-btn(r0^(51qrn+_4oti^5++p9)yky1%tb*(wqcvao3qb9&#_rl
-      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+      - DATABASE_URL=${DATABASE_URL}
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
     volumes:
       - ./backend:/app
     ports:
