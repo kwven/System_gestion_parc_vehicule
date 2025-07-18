@@ -5,6 +5,7 @@ from .serializers import RegionSerializer, ProvinceSerializer, LocaliteSerialize
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from django.db import models
 
 # ViewSets pour la hiérarchie géographique
 class RegionViewSet(viewsets.ModelViewSet):
@@ -98,7 +99,7 @@ class DeplacementViewSet(viewsets.ModelViewSet):
         deplacement = self.get_object()
         vehicule_id = request.data.get("vehicule_id")
         if not vehicule_id:
-            return Response({"error": "L\'ID du véhicule est requis."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "L'ID du véhicule est requis."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             vehicule = Vehicule.objects.get(id=vehicule_id)
@@ -124,7 +125,7 @@ class DeplacementViewSet(viewsets.ModelViewSet):
         deplacement = self.get_object()
         agent_id = request.data.get("agent_id")
         if not agent_id:
-            return Response({"error": "L\'ID de l\'agent est requis."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "L'ID de l'agent est requis."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             agent = Agent.objects.get(id=agent_id)
@@ -150,7 +151,7 @@ class DeplacementViewSet(viewsets.ModelViewSet):
         deplacement = self.get_object()
         chauffeur_id = request.data.get("chauffeur_id")
         if not chauffeur_id:
-            return Response({"error": "L\'ID du chauffeur est requis."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "L'ID du chauffeur est requis."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             chauffeur = Chauffeur.objects.get(agent_id=chauffeur_id)
