@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .models import Agent, User
 from .serializers import AgentSerializer, UserSerializer
+from django.db import models
 
 class AgentViewSet(viewsets.ModelViewSet):
     queryset = Agent.objects.all()
@@ -28,8 +29,6 @@ class RegisterUserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            user.set_password(request.data["password"])
-            user.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
