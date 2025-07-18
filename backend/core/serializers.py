@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Region, Province, Localite, Entite, Parc, Vehicule, TypeCout, CoutVehicule, Deplacement, UtilisationVehicule, ResponsableParc, ChefParcParc, EntiteParc, DeplacementAgent, DeplacementChauffeur, Responsable, Chauffeur, ChefParc
-from authentication.models import Agent
 from authentication.serializers import AgentSerializer
 
 # Serializers pour la hiérarchie géographique
@@ -57,6 +56,9 @@ class ChefParcSerializer(serializers.ModelSerializer):
 
 # Serializers pour la gestion des véhicules
 class VehiculeSerializer(serializers.ModelSerializer):
+    date_creation = serializers.DateTimeField(read_only=True)
+    date_modification = serializers.DateTimeField(read_only=True)
+    dateAcquisition = serializers.DateField(required=False, allow_null=True)
     class Meta:
         model = Vehicule
         fields = '__all__'
