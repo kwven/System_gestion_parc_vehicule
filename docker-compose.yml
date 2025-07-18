@@ -4,6 +4,7 @@ services:
   db:
     image: postgres:15-alpine
     container_name: parc_vehicule_db
+    env_file: .env
     environment:
       POSTGRES_DB: parc_vehicule
       POSTGRES_USER: parc_user
@@ -27,6 +28,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: parc_vehicule_backend
+    env_file: .env
     environment:
       - DATABASE_URL=postgresql://parc_user:parc_password@db:5432/parc_vehicule
       - DEBUG=True
@@ -46,26 +48,6 @@ services:
       sh -c "/wait-for-db.sh db python manage.py migrate &&
           python manage.py collectstatic --noinput &&
           python manage.py runserver 0.0.0.0:8000"
-
-  # Frontend React
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: parc_vehicules_frontend
-    environment:
-     - REACT_APP_API_URL=http://localhost:8000/api
-     - CHOKIDAR_USEPOLLING=true
-    volumes:
-     - ./frontend:/app
-     - /app/node_modules # Empêche l'écrasement de node_modules par le volume
-    ports:
-     - "3000:3000"
-    depends_on:
-     - backend
-    networks:
-     - parc_network
-
 volumes:
   postgres_data:
 
