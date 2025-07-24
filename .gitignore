@@ -73,3 +73,6 @@ build/
 
 # Jupyter notebooks (si jamais utilisés)
 .ipynb_checkpoints/
+## node frontend
+node_modules
+dist
