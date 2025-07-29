@@ -22,8 +22,8 @@ export default function CardsGrid() {
       >
         <Card
           title="Gestion Multi-Niveaux"
-          description="Optimisez vos ressources."
-          image="/bus.png"
+          description="Gérez la structure de l'organisation à plusieurs niveaux, du central au local."
+          image="/hierarchy.png"
         />
       </div>
 
@@ -34,8 +34,8 @@ export default function CardsGrid() {
       >
         <Card
           title="Contrôle d'Accès"
-          description="Sécurisez l'accès aux véhicules."
-          image="/control.png"
+          description="Gérez les autorisations des utilisateurs et limitez l'accès aux fonctionnalités sensibles."
+          image="/security.png"
         />
       </div>
 
@@ -47,7 +47,7 @@ export default function CardsGrid() {
       >
         <Card
           title="Tableaux de Bord"
-          description="Analysez les données facilement."
+          description="Consultez les indicateurs clés et les statistiques de gestion."
           image="/dashboard.png"
         />
       </div>
@@ -59,8 +59,8 @@ export default function CardsGrid() {
       >
         <Card
           title="Suivi des Déplacements"
-          description="Surveillez vos trajets."
-          image="/suivi.png"
+          description="Suivez les trajets et les mouvements des véhicules."
+          image="/tracking.png"
         />
       </div>
     </div>

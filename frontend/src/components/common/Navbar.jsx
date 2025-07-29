@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const links = [
-    { label: 'Qui sommes-nous ?', href: '#qui-sommes-nous' },
-    { label: 'Ressources', href: '#ressources' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Qui sommes-nous ?', href: '/about' },
+    { label: 'Contact', href: '/contact' },
+    { label: 'connexion', href: '/login' },
   ];
 
   return (
     <header className="bg-white shadow">
       <div className="max-w-7xl px-8 mx-auto sm:px-8 lg:px-5">
-        <div className="flex justify-between items-center h-25">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <img src={'logo.webp'} alt="SGVP" className="h-23" />
+          <img src={'logo.png'} alt="SGVP" className="h-15" />
 
           {/* Desktop nav */}
           <nav className="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
