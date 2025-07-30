@@ -68,18 +68,6 @@ const Header = ({ title, toggleSidebar }) => {
 
           {/* Notifications et profil */}
           <div className="flex items-center space-x-3">
-            {/* Bouton de notification */}
-            <div className="relative">
-              <button className="p-2 rounded-full text-gray-600 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <Bell className="h-5 w-5" />
-                {notificationCount > 0 && (
-                  <span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
-                    {notificationCount > 9 ? '9+' : notificationCount}
-                  </span>
-                )}
-              </button>
-            </div>
-
             {/* Menu profil */}
             <div className="relative">
               <button
@@ -116,11 +104,6 @@ const Header = ({ title, toggleSidebar }) => {
                     <Link to="/profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       <User className="mr-3 h-4 w-4 text-gray-500" />
                       Mon profil
-                    </Link>
-                    
-                    <Link to="/settings" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <Settings className="mr-3 h-4 w-4 text-gray-500" />
-                      Paramètres
                     </Link>
                     
                     <button 
