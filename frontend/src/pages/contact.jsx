@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/common/Navbar';
-import { Mail, Phone, MapPin, Clock, Send, Github, Linkedin, Globe, MessageCircle, Users, Award, Target } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, } from 'lucide-react';
 import { Link } from 'react-router-dom';function Help() {
   const [formData, setFormData] = useState({
     name: '',
@@ -177,7 +177,7 @@ import { Link } from 'react-router-dom';function Help() {
 
           {/* Call to Action */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-12 text-center text-white">
-            <h2 className="text-3xl font-bold mb-4">Prêt à utiliser notre solution ?</h2>
+            <h2 className="text-3xl font-bold mb-4">Prêt à utiliser notre système ?</h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/logout" >
               <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-blue-600 transition-colors">
