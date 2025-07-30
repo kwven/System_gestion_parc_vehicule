@@ -1,12 +1,12 @@
 import React from 'react';
-import Layout from '../components/common/Layout';
-
+import Navbar from '../components/common/Navbar';
 function About() {
   return (
-    <Layout>
-      <div className="container mx-auto p-4">
+      <div>
+      <Navbar />
+      <div className="container mx-auto p-4 mt-10 items-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">À Propos de Notre Système</h2>
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="bg-white p-4 rounded-lg shadow-md">
           <p className="text-gray-700 mb-4">
             Le Système de Gestion de Parc de Véhicules est une application robuste et intuitive conçue pour optimiser la gestion de votre flotte. Que vous soyez une entreprise, une administration ou une organisation, notre solution vous aide à suivre vos véhicules, gérer les déplacements, contrôler les coûts et assurer une maintenance efficace.
           </p>
@@ -18,7 +18,7 @@ function About() {
           </p>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }
 

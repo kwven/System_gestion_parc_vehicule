@@ -22,7 +22,7 @@ function Login() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-              Email ou Nom d'utilisateur
+              Nom d'utilisateur
             </label>
             <input
               type="text"
@@ -48,17 +48,14 @@ function Login() {
               required
             />
           </div>
-          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-center">
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Se connecter
             </button>
-            <Link to="/forgot-password" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-              Mot de passe oublié ?
-            </Link>
-          </div>
+            </div>
         </form>
       </div>
     </div>
