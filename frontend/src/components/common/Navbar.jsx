@@ -14,8 +14,9 @@ export default function Navbar() {
       <div className="max-w-7xl px-8 mx-auto sm:px-8 lg:px-5">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
+          <Link to="/" className="flex items-center">
           <img src={'logo.png'} alt="SGVP" className="h-15" />
-
+          </Link>
           {/* Desktop nav */}
           <nav className="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
             {links.map(({ label, href }) => (
