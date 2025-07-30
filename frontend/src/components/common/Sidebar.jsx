@@ -37,10 +37,10 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
     };
   }, []);
   const [expandedSections, setExpandedSections] = useState({
-    dashboard:false,
+    dashboard: false,
     deplacement: false,
-    vehicule: false,
-    chauffeurs: false
+    chauffeurs: false,
+    vehicule: false
   });
 
   const toggleSection = (section) => {
@@ -75,28 +75,48 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
         items: []
       }
     };
+    
     switch (userType) {
       case 'Responsable':
-        // Le responsable ne voit que le tableau de bord
+        // Le responsable voit l'accueil et le tableau de bord complet
         return {
           dashboard: {
             ...baseItems.dashboard,
             items: [
-              { name: 'Tableau de bord local', icon: BarChart3, href: '/admin/dashboard' },
-              { name: 'Tableau de bord global', icon: BarChart3, href: '/admin/dashboard/global' },
+              { name: 'Tableau de bord global', icon: BarChart3, href: '/global-dashboard' },
+            ]
+          },
+          deplacement: {
+            ...baseItems.deplacement,
+            items: [
+              { name: 'Tous les déplacements', icon: List, href: '/all-deplacement' },
+              { name: 'Rapports déplacements', icon: Eye, href: '/deplacement-report' }
+            ]
+          },
+          vehicule: {
+            ...baseItems.vehicule,
+            items: [
+              { name: 'Tous les véhicules', icon: List, href: '/all-vehicule' },
+              { name: 'Rapports véhicule', icon: Eye, href: '/vehicule-report' }
+            ]
+          },
+          chauffeurs: {
+            ...baseItems.chauffeurs,
+            items: [
+              { name: 'Tous les chauffeurs', icon: List, href: '/all-chauffeur' },
             ]
           }
         };
 
       case 'chef de parc':
-        // Le chef de parc voit les déplacements, véhicules et chauffeurs
+        // Le chef de parc voit l'accueil, les déplacements, véhicules et chauffeurs
         return {
           deplacement: {
             ...baseItems.deplacement,
             items: [
               { name: 'Tous les déplacements', icon: List, href: '/all-deplacement' },
               { name: 'Créer déplacement', icon: Plus, href: '/create-deplacement' },
-              { name: 'En attente de validation', icon: BarChart3, href: '/to-validate' }
+              { name: 'En attente de validation', icon: BarChart3, href: '/to-validate' },
             ]
           },
           vehicule: {
@@ -104,7 +124,7 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
             items: [
               { name: 'Tous les véhicules', icon: List, href: '/all-vehicule' },
               { name: 'Ajouter véhicule', icon: Plus, href: '/create-vehicule' },
-              { name: 'Gestion véhicule', icon: Edit, href: '/manage-vehicule' }
+              { name: 'Gestion véhicule', icon: Edit, href: '/manage-vehicule' },
             ]
           },
           chauffeurs: {
@@ -112,23 +132,22 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
             items: [
               { name: 'Tous les chauffeurs', icon: List, href: '/all-chauffeur' },
               { name: 'Ajouter chauffeur', icon: Plus, href: '/create-chauffeur' },
-              { name: 'Gérer chauffeurs', icon: Edit, href: '/manage-chauffeur' }
+              { name: 'Gérer chauffeurs', icon: Edit, href: '/manage-chauffeur' },
             ]
           }
-          // Pas de tableau de bord pour le chef de parc
         };
 
       case 'chauffeur':
-        // Le chauffeur ne voit que la section déplacement
+        // Le chauffeur voit l'accueil et ses déplacements
         return {
           deplacement: {
             ...baseItems.deplacement,
             items: [
               { name: 'Mes déplacements', icon: List, href: '/Ch-Deplacement' },
-              { name: 'Formulaire trajet', icon: MapPin, href: '/fill-trajet' },
             ]
           }
         };
+        
       default:
         // Par défaut, retourner un objet vide
         return {};
@@ -136,11 +155,6 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
   };
 
   const menuItems = getMenuItems();
-
-  const handleItemClick = (href) => {
-    // Add your navigation logic here
-    console.log('Navigating to:', href);
-  };
 
   // Vérifie si un élément est actif en fonction de l'URL actuelle
   const isActive = (href) => {
@@ -208,6 +222,14 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
       <nav className="flex-1 overflow-y-auto py-4 bg-gray-50">
         {/* Liens principaux */}
         <div className="px-3 mb-3">
+          <Link 
+            to="/accueil" 
+            className={`flex items-center px-4 py-2 mb-1 text-sm font-medium rounded-md ${isActive('/accueil') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-100'} transition-colors duration-200 ${!isOpen && 'justify-center'}`}
+          >
+            <Home className={`h-5 w-5 ${isActive('/accueil') ? 'text-blue-600' : 'text-gray-500'}`} />
+            {isOpen && <span className="ml-3">Page d'accueil</span>}
+          </Link>
+          
           <Link 
             to="/profile" 
             className={`flex items-center px-4 py-2 mb-1 text-sm font-medium rounded-md ${isActive('/profile') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-100'} transition-colors duration-200 ${!isOpen && 'justify-center'}`}
@@ -294,11 +316,6 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
       {/* Pied de la sidebar */}
       <div className="p-4 border-t border-gray-200 bg-white">
         <div className="space-y-3">
-          <Link to="/settings" className={`flex items-center text-sm text-gray-700 hover:text-blue-600 ${!isOpen && 'justify-center'}`}>
-            <Settings className="h-5 w-5" />
-            {isOpen && <span className="ml-3">Paramètres</span>}
-          </Link>
-          
           <Link to="/logout" className={`flex items-center text-sm text-red-600 hover:text-red-700 ${!isOpen && 'justify-center'}`}>
             <LogOut className="h-5 w-5" />
             {isOpen && <span className="ml-3">Déconnexion</span>}
