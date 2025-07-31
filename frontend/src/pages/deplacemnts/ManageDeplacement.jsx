@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../components/common/Layout';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { Select } from '../../components/ui/Select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/Select';
 
 export default function ManageDeplacement() {
     const [deplacements, setDeplacements] = useState([]);
     const [filteredDeplacements, setFilteredDeplacements] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterPeriod, setFilterPeriod] = useState('all'); // all, today, month, year
-    const [selectedDate, setSelectedDate] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all'); // all, planifie, en_cours, termine, annule
     const [editingDeplacement, setEditingDeplacement] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
 
@@ -30,7 +29,6 @@ export default function ManageDeplacement() {
             passagers: "M. Ahmed, Mme. Fatima",
             distance: "87 km",
             motif: "Réunion d'affaires",
-            cout: "450 DH"
         },
         {
             id: 2,
@@ -46,7 +44,6 @@ export default function ManageDeplacement() {
             passagers: "M. Hassan",
             distance: "210 km",
             motif: "Transport VIP",
-            cout: "850 DH"
         },
         {
             id: 3,
@@ -62,7 +59,6 @@ export default function ManageDeplacement() {
             passagers: "Délégation commerciale",
             distance: "240 km",
             motif: "Conférence",
-            cout: "950 DH"
         },
         {
             id: 4,
@@ -78,7 +74,6 @@ export default function ManageDeplacement() {
             passagers: "M. Omar",
             distance: "65 km",
             motif: "Transport personnel",
-            cout: "320 DH"
         },
         {
             id: 5,
@@ -94,7 +89,6 @@ export default function ManageDeplacement() {
             passagers: "Famille Bennani",
             distance: "175 km",
             motif: "Tourisme",
-            cout: "700 DH"
         }
     ];
 
@@ -109,7 +103,7 @@ export default function ManageDeplacement() {
 
     useEffect(() => {
         filterDeplacements();
-    }, [deplacements, searchTerm, filterPeriod, selectedDate]);
+    }, [deplacements, searchTerm, filterStatus]);
 
     const filterDeplacements = () => {
         let filtered = deplacements;
@@ -124,32 +118,9 @@ export default function ManageDeplacement() {
             );
         }
 
-        // Filtrage par période
-        if (filterPeriod !== 'all') {
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth();
-            const currentDate = today.toISOString().split('T')[0];
-
-            filtered = filtered.filter(dep => {
-                const depDate = new Date(dep.dateDepart);
-                
-                switch (filterPeriod) {
-                    case 'today':
-                        return dep.dateDepart === currentDate;
-                    case 'month':
-                        return depDate.getFullYear() === currentYear && depDate.getMonth() === currentMonth;
-                    case 'year':
-                        return depDate.getFullYear() === currentYear;
-                    case 'custom':
-                        if (selectedDate) {
-                            return dep.dateDepart === selectedDate;
-                        }
-                        return true;
-                    default:
-                        return true;
-                }
-            });
+        // Filtrage par statut
+        if (filterStatus !== 'all') {
+            filtered = filtered.filter(dep => dep.statut === filterStatus);
         }
 
         setFilteredDeplacements(filtered);
@@ -236,7 +207,7 @@ export default function ManageDeplacement() {
 
                     {/* Filtres et recherche */}
                     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {/* Recherche */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -251,44 +222,35 @@ export default function ManageDeplacement() {
                                 />
                             </div>
 
-                            {/* Filtre par période */}
+                            {/* Filtre par statut */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Période
+                                    Filtrer par statut
                                 </label>
-                                <Select
-                                    value={filterPeriod}
-                                    onChange={(e) => setFilterPeriod(e.target.value)}
-                                    className="w-full"
-                                >
-                                    <option value="all">Toutes les périodes</option>
-                                    <option value="today">Aujourd'hui</option>
-                                    <option value="month">Ce mois</option>
-                                    <option value="year">Cette année</option>
-                                    <option value="custom">Date personnalisée</option>
+                                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Sélectionner un statut" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Tous les statuts</SelectItem>
+                                        <SelectItem value="planifie">Planifié</SelectItem>
+                                        <SelectItem value="en_cours">En cours</SelectItem>
+                                        <SelectItem value="termine">Terminé</SelectItem>
+                                        <SelectItem value="annule">Annulé</SelectItem>
+                                    </SelectContent>
                                 </Select>
                             </div>
-
-                            {/* Date personnalisée */}
-                            {filterPeriod === 'custom' && (
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Date
-                                    </label>
-                                    <Input
-                                        type="date"
-                                        value={selectedDate}
-                                        onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="w-full"
-                                    />
-                                </div>
-                            )}
 
                             {/* Statistiques */}
                             <div className="flex items-end">
                                 <div className="text-sm text-gray-600">
                                     <p>Total: {filteredDeplacements.length} déplacements</p>
-                                    <p>Planifiés: {filteredDeplacements.filter(d => d.statut === 'planifie').length}</p>
+                                    <div className="grid grid-cols-2 gap-1 mt-1">
+                                        <p>Planifiés: {filteredDeplacements.filter(d => d.statut === 'planifie').length}</p>
+                                        <p>En cours: {filteredDeplacements.filter(d => d.statut === 'en_cours').length}</p>
+                                        <p>Terminés: {filteredDeplacements.filter(d => d.statut === 'termine').length}</p>
+                                        <p>Annulés: {filteredDeplacements.filter(d => d.statut === 'annule').length}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -314,9 +276,6 @@ export default function ManageDeplacement() {
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Statut
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Coût
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Actions
@@ -351,14 +310,25 @@ export default function ManageDeplacement() {
                                                 {deplacement.vehicule}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                    getStatusColor(deplacement.statut)
-                                                }`}>
-                                                    {getStatusText(deplacement.statut)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {deplacement.cout}
+                                                <Select 
+                                                    value={deplacement.statut} 
+                                                    onValueChange={(value) => handleStatusChange(deplacement.id, value)}
+                                                    disabled={deplacement.statut === 'termine'}
+                                                >
+                                                    <SelectTrigger className={`text-xs px-2 py-1 min-w-[100px] ${
+                                                        deplacement.statut === 'termine' 
+                                                            ? 'bg-gray-100 cursor-not-allowed' 
+                                                            : ''
+                                                    }`}>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="planifie">Planifié</SelectItem>
+                                                        <SelectItem value="en_cours">En cours</SelectItem>
+                                                        <SelectItem value="termine">Terminé</SelectItem>
+                                                        <SelectItem value="annule">Annulé</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div className="flex space-x-2">
@@ -386,18 +356,6 @@ export default function ManageDeplacement() {
                                                     >
                                                         Supprimer
                                                     </Button>
-                                                    {deplacement.statut !== 'termine' && (
-                                                        <Select
-                                                            value={deplacement.statut}
-                                                            onChange={(e) => handleStatusChange(deplacement.id, e.target.value)}
-                                                            className="text-xs px-2 py-1"
-                                                        >
-                                                            <option value="planifie">Planifié</option>
-                                                            <option value="en_cours">En cours</option>
-                                                            <option value="termine">Terminé</option>
-                                                            <option value="annule">Annulé</option>
-                                                        </Select>
-                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
