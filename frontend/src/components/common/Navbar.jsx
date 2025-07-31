@@ -20,9 +20,9 @@ export default function Navbar() {
           {/* Desktop nav */}
           <nav className="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
             {links.map(({ label, href }) => (
-              <a key={label} href={href} className="hover:text-indigo-600">
+              <Link key={label} to={href} className="hover:text-indigo-600 transition-colors duration-200">
                 {label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -38,9 +38,9 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden pb-4 space-y-2">
             {links.map(({ label, href }) => (
-              <a key={label} href={href} className="block px-3 py-2 text-gray-700 hover:text-indigo-600">
+              <Link key={label} to={href} className="block px-3 py-2 text-gray-700 hover:text-indigo-600 transition-colors duration-200" onClick={() => setOpen(false)}>
                 {label}
-              </a>
+              </Link>
             ))}
           </div>
         )}
