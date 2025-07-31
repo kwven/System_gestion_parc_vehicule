@@ -185,7 +185,7 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
       >
       {/* En-tête de la sidebar */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 bg-blue-600 text-white">
-          <Link to="/" className="flex items-center">
+          <Link to="/accueil" className="flex items-center">
             <div className="flex items-center justify-center h-8 w-8 rounded-md bg-white text-blue-600">
               <Home className="h-5 w-5" />
             </div>
