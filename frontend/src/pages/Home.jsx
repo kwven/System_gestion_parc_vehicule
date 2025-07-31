@@ -4,9 +4,11 @@ import Navbar from '../components/common/Navbar';
 import Hero from '../components/common/Hero';
 function Home() {
   return (
-    <div>
+    <div className="h-screen overflow-hidden flex flex-col">
       <Navbar />
-      <Hero />
+      <div className="flex-1">
+        <Hero />
+      </div>
     </div>
   );
 }
