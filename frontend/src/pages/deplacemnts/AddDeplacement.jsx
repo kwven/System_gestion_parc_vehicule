@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from '../../components/common/Layout';
 import { Calendar, MapPin, Users, User, FileText, Clock, Save, X, Plus, Trash2 } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Textarea } from '../../components/ui/Textarea';
+import { Checkbox } from '../../components/ui/Checkbox';
 
 const AddDeplacement = ({ userType = 'chef de parc' }) => {
   const [formData, setFormData] = useState({
@@ -229,15 +233,13 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
                 <MapPin className="inline h-4 w-4 mr-1" />
                 Destination *
               </label>
-              <input
+              <Input
                 type="text"
                 id="destination"
                 name="destination"
                 value={formData.destination}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.destination ? 'border-red-500' : 'border-gray-300'
-                }`}
+                hasError={!!errors.destination}
                 placeholder="Entrez la destination du déplacement"
               />
               {errors.destination && (
@@ -248,12 +250,10 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
             {/* Type de déplacement */}
             <div>
               <label className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
+                <Checkbox
                   name="isMission"
                   checked={formData.isMission}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isMission: checked }))}
                 />
                 <span className="text-sm font-medium text-gray-700">
                   <FileText className="inline h-4 w-4 mr-1" />
@@ -269,16 +269,14 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
                   <Calendar className="inline h-4 w-4 mr-1" />
                   Date de départ *
                 </label>
-                <input
+                <Input
                   type="date"
                   id="dateDepart"
                   name="dateDepart"
                   value={formData.dateDepart}
                   onChange={handleInputChange}
                   min={new Date().toISOString().split('T')[0]}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.dateDepart ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  hasError={!!errors.dateDepart}
                 />
                 {errors.dateDepart && (
                   <p className="mt-1 text-sm text-red-600">{errors.dateDepart}</p>
@@ -290,15 +288,13 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
                   <Clock className="inline h-4 w-4 mr-1" />
                   Heure de départ *
                 </label>
-                <input
+                <Input
                   type="time"
                   id="heureDepart"
                   name="heureDepart"
                   value={formData.heureDepart}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.heureDepart ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  hasError={!!errors.heureDepart}
                 />
                 {errors.heureDepart && (
                   <p className="mt-1 text-sm text-red-600">{errors.heureDepart}</p>
@@ -410,13 +406,14 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
                              ({participant.fonction}) - {participant.ville} - {participant.role}
                            </span>
                         </div>
-                        <button
+                        <Button
                           type="button"
                           onClick={() => removeParticipant(participant.agentId)}
-                          className="text-red-600 hover:text-red-800"
+                          variant="ghost"
+                          className="text-red-600 hover:text-red-800 p-1"
                         >
                           <Trash2 className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -434,15 +431,13 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
                 <FileText className="inline h-4 w-4 mr-1" />
                 Description {formData.isMission && '*'}
               </label>
-              <textarea
+              <Textarea
                 id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.description ? 'border-red-500' : 'border-gray-300'
-                }`}
+                hasError={!!errors.description}
                 placeholder={formData.isMission ? "Décrivez l'objectif et les détails de la mission..." : "Description optionnelle du déplacement..."}
               />
               {errors.description && (
@@ -452,21 +447,21 @@ const AddDeplacement = ({ userType = 'chef de parc' }) => {
 
             {/* Boutons d'action */}
             <div className="flex justify-end space-x-4 pt-6 border-t">
-              <button
+              <Button
                 type="button"
                 onClick={handleReset}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                variant="secondary"
               >
                 <X className="inline h-4 w-4 mr-1" />
                 Annuler
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                variant="primary"
               >
                 <Save className="inline h-4 w-4 mr-1" />
                 Créer le déplacement
-              </button>
+              </Button>
             </div>
           </form>
         </div>

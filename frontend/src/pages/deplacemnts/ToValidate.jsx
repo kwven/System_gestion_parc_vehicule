@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/common/Layout';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/Select';
 
 const ToValidate = ({ userType }) => {
+    const navigate = useNavigate();
     const [pendingRequests, setPendingRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -150,15 +155,6 @@ const ToValidate = ({ userType }) => {
         }
     };
 
-    const getPriorityColor = (priorite) => {
-        switch (priorite) {
-            case 'urgente': return 'bg-red-100 text-red-800';
-            case 'normale': return 'bg-blue-100 text-blue-800';
-            case 'faible': return 'bg-gray-100 text-gray-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
-
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('fr-FR');
     };
@@ -231,22 +227,6 @@ const ToValidate = ({ userType }) => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="bg-white rounded-lg shadow-md p-6">
-                            <div className="flex items-center">
-                                <div className="p-3 rounded-full bg-orange-100 text-orange-600">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                                    </svg>
-                                </div>
-                                <div className="ml-4">
-                                    <p className="text-sm font-medium text-gray-600">Urgentes</p>
-                                    <p className="text-2xl font-bold text-gray-900">
-                                        {pendingRequests.filter(r => r.priorite === 'urgente').length}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Filters */}
@@ -256,12 +236,12 @@ const ToValidate = ({ userType }) => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Rechercher
                                 </label>
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Chauffeur, destination, motif..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full"
                                 />
                             </div>
 
@@ -269,16 +249,20 @@ const ToValidate = ({ userType }) => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Statut
                                 </label>
-                                <select
-                                    value={filterStatus}
-                                    onChange={(e) => setFilterStatus(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="all">Tous les statuts</option>
-                                    <option value="en_attente">En attente</option>
-                                    <option value="approuve">Approuvé</option>
-                                    <option value="rejete">Rejeté</option>
-                                </select>
+                                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Sélectionner un statut" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Tous les statuts</SelectItem>
+                                        <SelectItem value="planifie">Planifié</SelectItem>
+                                        <SelectItem value="en_cours">En cours</SelectItem>
+                                        <SelectItem value="termine">Terminé</SelectItem>
+                                        <SelectItem value="en_attente">En attente</SelectItem>
+                                        <SelectItem value="approuve">Approuvé</SelectItem>
+                                        <SelectItem value="rejete">Rejeté</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div className="flex items-end">
@@ -304,9 +288,6 @@ const ToValidate = ({ userType }) => {
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Date
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Priorité
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Statut
@@ -343,13 +324,6 @@ const ToValidate = ({ userType }) => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                    getPriorityColor(request.priorite)
-                                                }`}>
-                                                    {request.priorite.charAt(0).toUpperCase() + request.priorite.slice(1)}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                                                     getStatusColor(request.statut)
                                                 }`}>
                                                     {getStatusText(request.statut)}
@@ -359,26 +333,32 @@ const ToValidate = ({ userType }) => {
                                                 <div className="flex space-x-2">
                                                     {request.statut === 'en_attente' && (
                                                         <>
-                                                            <button
+                                                            <Button
                                                                 onClick={() => handleApprove(request.id)}
-                                                                className="text-green-600 hover:text-green-900"
+                                                                variant="ghost"
+                                                                className="text-green-600 hover:text-green-900 p-0 h-auto"
                                                             >
                                                                 Approuver
-                                                            </button>
-                                                            <button
+                                                            </Button>
+                                                            <Button
                                                                 onClick={() => {
                                                                     const motif = prompt('Motif du rejet:');
                                                                     if (motif) handleReject(request.id, motif);
                                                                 }}
-                                                                className="text-red-600 hover:text-red-900"
+                                                                variant="ghost"
+                                                                className="text-red-600 hover:text-red-900 p-0 h-auto"
                                                             >
                                                                 Rejeter
-                                                            </button>
+                                                            </Button>
                                                         </>
                                                     )}
-                                                    <button className="text-blue-600 hover:text-blue-900">
+                                                    <Button 
+                                                        onClick={() => navigate(`/deplacements/details/${request.id}`)}
+                                                        variant="ghost" 
+                                                        className="text-blue-600 hover:text-blue-900 p-0 h-auto"
+                                                    >
                                                         Détails
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </td>
                                         </tr>

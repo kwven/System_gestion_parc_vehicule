@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../components/common/Layout';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
 
 export default function ManageDeplacement() {
     const [deplacements, setDeplacements] = useState([]);
@@ -239,12 +242,12 @@ export default function ManageDeplacement() {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Rechercher
                                 </label>
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Destination, chauffeur, motif..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full"
                                 />
                             </div>
 
@@ -253,17 +256,17 @@ export default function ManageDeplacement() {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Période
                                 </label>
-                                <select
+                                <Select
                                     value={filterPeriod}
                                     onChange={(e) => setFilterPeriod(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full"
                                 >
                                     <option value="all">Toutes les périodes</option>
                                     <option value="today">Aujourd'hui</option>
                                     <option value="month">Ce mois</option>
                                     <option value="year">Cette année</option>
                                     <option value="custom">Date personnalisée</option>
-                                </select>
+                                </Select>
                             </div>
 
                             {/* Date personnalisée */}
@@ -272,11 +275,11 @@ export default function ManageDeplacement() {
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Date
                                     </label>
-                                    <input
+                                    <Input
                                         type="date"
                                         value={selectedDate}
                                         onChange={(e) => setSelectedDate(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                             )}
@@ -359,39 +362,41 @@ export default function ManageDeplacement() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div className="flex space-x-2">
-                                                    <button
+                                                    <Button
                                                         onClick={() => handleEdit(deplacement)}
                                                         disabled={deplacement.statut === 'termine'}
-                                                        className={`${
+                                                        variant="ghost"
+                                                        className={`p-0 h-auto ${
                                                             deplacement.statut === 'termine'
                                                                 ? 'text-gray-400 cursor-not-allowed'
                                                                 : 'text-blue-600 hover:text-blue-900'
                                                         }`}
                                                     >
                                                         Modifier
-                                                    </button>
-                                                    <button
+                                                    </Button>
+                                                    <Button
                                                         onClick={() => handleDelete(deplacement.id)}
                                                         disabled={deplacement.statut === 'termine'}
-                                                        className={`${
+                                                        variant="ghost"
+                                                        className={`p-0 h-auto ${
                                                             deplacement.statut === 'termine'
                                                                 ? 'text-gray-400 cursor-not-allowed'
                                                                 : 'text-red-600 hover:text-red-900'
                                                         }`}
                                                     >
                                                         Supprimer
-                                                    </button>
+                                                    </Button>
                                                     {deplacement.statut !== 'termine' && (
-                                                        <select
+                                                        <Select
                                                             value={deplacement.statut}
                                                             onChange={(e) => handleStatusChange(deplacement.id, e.target.value)}
-                                                            className="text-xs border border-gray-300 rounded px-2 py-1"
+                                                            className="text-xs px-2 py-1"
                                                         >
                                                             <option value="planifie">Planifié</option>
                                                             <option value="en_cours">En cours</option>
                                                             <option value="termine">Terminé</option>
                                                             <option value="annule">Annulé</option>
-                                                        </select>
+                                                        </Select>
                                                     )}
                                                 </div>
                                             </td>
@@ -427,145 +432,145 @@ export default function ManageDeplacement() {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Destination
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
                                         value={editingDeplacement.destination}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             destination: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Motif
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
                                         value={editingDeplacement.motif}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             motif: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Date de départ
                                     </label>
-                                    <input
+                                    <Input
                                         type="date"
                                         value={editingDeplacement.dateDepart}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             dateDepart: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Heure de départ
                                     </label>
-                                    <input
+                                    <Input
                                         type="time"
                                         value={editingDeplacement.heureDepart}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             heureDepart: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Date de retour
                                     </label>
-                                    <input
+                                    <Input
                                         type="date"
                                         value={editingDeplacement.dateRetour}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             dateRetour: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Heure de retour
                                     </label>
-                                    <input
+                                    <Input
                                         type="time"
                                         value={editingDeplacement.heureRetour}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             heureRetour: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Passagers
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
                                         value={editingDeplacement.passagers}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             passagers: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Distance
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
                                         value={editingDeplacement.distance}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             distance: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Coût
                                     </label>
-                                    <input
+                                    <Input
                                         type="text"
                                         value={editingDeplacement.cout}
                                         onChange={(e) => setEditingDeplacement({
                                             ...editingDeplacement,
                                             cout: e.target.value
                                         })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full"
                                     />
                                 </div>
                             </div>
                             <div className="flex justify-end space-x-3 mt-6">
-                                <button
+                                <Button
                                     onClick={() => {
                                         setShowEditModal(false);
                                         setEditingDeplacement(null);
                                     }}
-                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                                    variant="secondary"
                                 >
                                     Annuler
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={handleSaveEdit}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                    variant="primary"
                                 >
                                     Sauvegarder
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>

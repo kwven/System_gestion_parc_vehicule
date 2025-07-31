@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../components/common/Layout';
 import { Calendar, MapPin, Users, User, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
 
 const AllDeplacement = ({userType}) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -219,20 +220,21 @@ const AllDeplacement = ({userType}) => {
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-lg shadow">
             <div className="flex flex-1 justify-between sm:hidden">
-              <button
+              <Button
                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="secondary"
               >
                 Précédent
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                variant="secondary"
+                className="ml-3"
               >
                 Suivant
-              </button>
+              </Button>
             </div>
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
               <div>
@@ -244,19 +246,21 @@ const AllDeplacement = ({userType}) => {
               </div>
               <div>
                 <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                  <button
+                  <Button
                     onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
+                    variant="ghost"
                     className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft className="h-5 w-5" />
-                  </button>
+                  </Button>
                   {[...Array(totalPages)].map((_, index) => {
                     const page = index + 1;
                     return (
-                      <button
+                      <Button
                         key={page}
                         onClick={() => handlePageChange(page)}
+                        variant={page === currentPage ? "primary" : "ghost"}
                         className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                           page === currentPage
                             ? 'z-10 bg-blue-600 text-white focus:z-20 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
@@ -264,16 +268,17 @@ const AllDeplacement = ({userType}) => {
                         }`}
                       >
                         {page}
-                      </button>
+                      </Button>
                     );
                   })}
-                  <button
+                  <Button
                     onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
+                    variant="ghost"
                     className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronRight className="h-5 w-5" />
-                  </button>
+                  </Button>
                 </nav>
               </div>
             </div>
