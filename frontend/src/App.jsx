@@ -43,7 +43,6 @@ function App() {
       <Route path="/validate-trajet" element={<ValidateTrajet />} />
       <Route path="/ch-deplacement" element={<ChDeplacement />} /> 
       <Route path="/deplacements/details/:id" element={<DeplacementDetails />} />
-      <Route path="/manage-deplacement" element={<ManageDeplacement />}/> 
       <Route path="/AllDeplacement" element={<AllDeplacement />} />
       <Route path="/fill-trajet" element={<FillTrajet />} />
       {/* vehicules routes */}
@@ -52,7 +51,6 @@ function App() {
       <Route path="/manage-vehicule" element={<ManageVehicule />} />
       <Route path="/chauffeurs" element={<AllChauffeur />} />
       <Route path="/manage-chauffeur" element={<ManageChauffeur />} />
-      <Route path="/vehicule-report" element={<VehiculeReport />} />
       <Route path="/accueil" element={<Accueil />} />
       {/* routes financières */}
       <Route path="/couts-vehicule" element={<CoutsVehicule />} />
