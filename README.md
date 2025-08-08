@@ -22,6 +22,8 @@ source venv/bin/activate
 # Installer les dépendances
 pip install -r requirements.txt
 ```
+# changer .env
+supprimer l’extension .example d’un fichier pour que les variables d’environnement soient prises en compte, ça veut dire qu’il faut renommer le fichier .env.example en .env
 
 ### 2. Configuration de la base de données
 
