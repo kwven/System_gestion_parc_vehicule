@@ -16,7 +16,11 @@ import {
   X,
   ChevronLeft,
   LogOut,
-  Home
+  Home,
+  DollarSign,
+  Calculator,
+  FileText,
+  TrendingUp
 } from 'lucide-react';
 
 const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => {
@@ -40,7 +44,9 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
     dashboard: false,
     deplacement: false,
     chauffeurs: false,
-    vehicule: false
+    vehicule: false,
+    gestion_financiere: false,
+    parc_management: false
   });
 
   const toggleSection = (section) => {
@@ -64,46 +70,58 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
         icon: MapPin,
         items: []
       },
-      chauffeurs: {
-        title: 'Chauffeurs',
-        icon: Users,
-        items: []
-      },
       vehicule: {
         title: 'Véhicule',
         icon: Car,
+        items: []
+      },
+      gestion_financiere: {
+        title: 'Gestion Financière',
+        icon: DollarSign,
+        items: []
+      },
+      chauffeurs: {
+        title: 'Chauffeurs',
+        icon: Users,
         items: []
       }
     };
     
     switch (userType) {
       case 'Responsable':
-        // Le responsable voit l'accueil et le tableau de bord complet
+        // Le responsable gère par parc avec focus sur la gestion financière
         return {
           dashboard: {
             ...baseItems.dashboard,
             items: [
-              { name: 'Tableau de bord global', icon: BarChart3, href: '/global-dashboard' },
+              { name: 'Tableau de bord', icon: BarChart3, href: '/tableau-bord-parc' },
+              { name: 'Vue d\'ensemble parc', icon: Eye, href: '/vue-ensemble-parc' }
+            ]
+          },
+          gestion_financiere: {
+            ...baseItems.gestion_financiere,
+            items: [
+              { name: 'Budget parc', icon: DollarSign, href: '/budget-parc' },
+              { name: 'TCO', icon: TrendingUp , href: '/tco-analyse'},
             ]
           },
           deplacement: {
             ...baseItems.deplacement,
             items: [
-              { name: 'Tous les déplacements', icon: List, href: '/all-deplacement' },
-              { name: 'Rapports déplacements', icon: Eye, href: '/deplacement-report' }
+              { name: 'Tous les déplacements', icon: List, href: '/deplacements' },
             ]
           },
           vehicule: {
             ...baseItems.vehicule,
             items: [
-              { name: 'Tous les véhicules', icon: List, href: '/all-vehicule' },
-              { name: 'Rapports véhicule', icon: Eye, href: '/vehicule-report' }
+              { name: 'Tous les véhicules', icon: List, href: '/vehicules' },
+              { name: 'Coûts par véhicule', icon: Calculator, href: '/couts-vehicule' }
             ]
           },
           chauffeurs: {
             ...baseItems.chauffeurs,
             items: [
-              { name: 'Tous les chauffeurs', icon: List, href: '/all-chauffeur' },
+              { name: 'Tous les chauffeurs', icon: List, href: '/chauffeurs' },
             ]
           }
         };
@@ -114,24 +132,25 @@ const Sidebar = ({ userType = 'Responsable', isOpen = true, toggleSidebar }) => 
           deplacement: {
             ...baseItems.deplacement,
             items: [
-              { name: 'Tous les déplacements', icon: List, href: '/all-deplacement' },
+              { name: 'Tous les déplacements', icon: List, href: '/deplacements' },
               { name: 'Créer déplacement', icon: Plus, href: '/create-deplacement' },
-              { name: 'En attente de validation', icon: BarChart3, href: '/to-validate' },
+              { name: 'Validation des trajets', icon: Eye, href: '/validate-trajet' },
             ]
           },
           vehicule: {
             ...baseItems.vehicule,
             items: [
-              { name: 'Tous les véhicules', icon: List, href: '/all-vehicule' },
+              { name: 'Tous les véhicules', icon: List, href: '/vehicules' },
               { name: 'Ajouter véhicule', icon: Plus, href: '/create-vehicule' },
               { name: 'Gestion véhicule', icon: Edit, href: '/manage-vehicule' },
+              { name: 'Maintenance', icon: Settings, href: '/maintenance' },
+
             ]
           },
           chauffeurs: {
             ...baseItems.chauffeurs,
             items: [
-              { name: 'Tous les chauffeurs', icon: List, href: '/all-chauffeur' },
-              { name: 'Ajouter chauffeur', icon: Plus, href: '/create-chauffeur' },
+              { name: 'Tous les chauffeurs', icon: List, href: '/chauffeurs' },
               { name: 'Gérer chauffeurs', icon: Edit, href: '/manage-chauffeur' },
             ]
           }

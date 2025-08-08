@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const links = [
-    { label: 'Qui sommes-nous ?', href: '/about' },
-    { label: 'Contact', href: '/contact' },
     { label: 'connexion', href: '/login' },
   ];
 

@@ -1,6 +1,6 @@
 
 @import 'tailwindcss';
-
+@import './animations.css';
 @layer utilities {
   @keyframes aurora {
     from {

@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt', # Pour l'authentification basée sur les tokens JWT
     # Mes applications
     'core',
-    'authentication', 
+    'authentication',
 ]
 
 MIDDLEWARE = [
