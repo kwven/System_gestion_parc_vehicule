@@ -9,7 +9,6 @@ import {
   CheckCircle,
   XCircle,
   Target,
-  PieChart as PieChartIcon
 } from 'lucide-react';
 import { 
   XAxis, 
@@ -17,7 +16,6 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer, 
-  LineChart, 
   Line, 
   PieChart, 
   Pie, 
