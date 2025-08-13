@@ -14,9 +14,5 @@ EXPOSE 8000
 # Copie et rend le script exécutable
 COPY wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
-# Script d'initialisation
-COPY init-audit.sh /init-audit.sh
-RUN chmod +x /init-audit.sh
-
 # Commande par défaut : Utilise le script wait-for-db.sh avec 'db' comme hôte
 CMD ["/wait-for-db.sh", "db", "python", "manage.py", "runserver","0.0.0.0:8000"]
