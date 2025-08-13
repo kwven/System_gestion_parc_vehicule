@@ -1,14 +1,12 @@
-
 services:
   # Base de données PostgreSQL
   db:
     image: postgres:15-alpine
     container_name: parc_vehicule_db
-    env_file: .env
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: parc_vehicule
+      POSTGRES_USER: parc_user
+      POSTGRES_PASSWORD: mtl_2025_parc
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -16,7 +14,7 @@ services:
     networks:
       - parc_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U parc_user -d parc_vehicule"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,13 +25,12 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: parc_vehicule_backend
-    env_file: .env
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - DATABASE_URL=postgresql://parc_user:mtl_2025_parc@db:5432/parc_vehicule
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-6azj$@r*w*3pxxl$69rr^6%hgfk9$2r8lpn7u$@dfjfsq
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
     volumes:
       - ./backend:/app
     ports:
@@ -47,24 +44,26 @@ services:
       sh -c "/wait-for-db.sh db python manage.py migrate &&
           python manage.py collectstatic --noinput &&
           python manage.py runserver 0.0.0.0:8000"
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: parc_vehicules_frontend
-    env_file: .env
-    environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL}
-      CHOKIDAR_USEPOLLING : ${CHOKIDAR_USEPOLLING}
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-    networks:
-      - parc_network
+
+  # Frontend React
+#  frontend:
+#    build:
+#      context: ./frontend
+ #     dockerfile: Dockerfile
+ #   container_name: parc_vehicules_frontend
+ #   environment:
+ #     - REACT_APP_API_URL=http://localhost:8000/api
+ #     - CHOKIDAR_USEPOLLING=true
+ #   volumes:
+ #     - ./frontend:/app
+ #     - /app/node_modules # Empêche l'écrasement de node_modules par le volume
+ #   ports:
+ #     - "3000:3000"
+#    depends_on:
+ #     - backend
+ #   networks:
+#      - parc_network
+
 volumes:
   postgres_data:
 
