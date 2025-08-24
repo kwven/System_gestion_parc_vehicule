@@ -125,6 +125,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles' # Où les fichiers statiques seront collectés en production
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -145,12 +152,14 @@ AUTH_USER_MODEL = 'authentication.User'
 # Paramètres de Django REST Framework
 
 REST_FRAMEWORK = {
-'DEFAULT_AUTHENTICATION_CLASSES': (
-'rest_framework_simplejwt.authentication.JWTAuthentication', # Utilise JWT pour l'authentification
-),
-'DEFAULT_PERMISSION_CLASSES': (
-'rest_framework.permissions.IsAuthenticated', # Par défaut, toutes les vues nécessitent une authentification
-),}
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework_simplejwt.authentication.JWTAuthentication', # Utilise JWT pour l'authentification
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+    'rest_framework.permissions.IsAuthenticated', # Par défaut, toutes les vues nécessitent une authentification
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,}
 
 # Paramètres de Simple JWT
 SIMPLE_JWT = {
@@ -184,10 +193,12 @@ SIMPLE_JWT = {
 SECURE_SSL_REDIRECT = False
 SECURE_BROWSER_XSS_FILTER = False
 SECURE_CONTENT_TYPE_NOSNIFF = False
-
+X_FRAME_OPTIONS = 'DENY'
 # Cache for development (dummy cache)
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+# Create logs directory if it doesn't exist
+os.makedirs(BASE_DIR / 'logs', exist_ok=True)

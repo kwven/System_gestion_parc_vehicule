@@ -48,6 +48,20 @@ services:
       sh -c "/wait-for-db.sh db python manage.py migrate &&
           python manage.py collectstatic --noinput &&
           python manage.py runserver 0.0.0.0:8000"
+  # Frontend 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: parc_vehicule_frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - parc_network
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
 volumes:
   postgres_data:
 

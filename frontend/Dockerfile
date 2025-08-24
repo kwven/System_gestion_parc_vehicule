@@ -1,24 +1,24 @@
-# Dockerfile pour le frontend React avec Vite
-FROM node:18-alpine
+# Utiliser une image Node basée sur Debian (plus complète que Alpine)
+FROM node:22-bullseye
 
 # Variables d'environnement
 ENV NODE_ENV=development
 ENV CHOKIDAR_USEPOLLING=true
 
-# Définir le répertoire de travail
+# Répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers de configuration des dépendances
+# Copier les fichiers de dépendances
 COPY package*.json ./
 
-# Installer toutes les dépendances avec cache optimisé
+# Installer les dépendances
 RUN npm ci --prefer-offline --no-audit
 
 # Copier le code source
 COPY . .
 
-# Exposer le port 5173 (port par défaut de Vite)
+# Exposer le port Vite (par défaut 5173)
 EXPOSE 5173
 
-# Commande pour démarrer le serveur de développement
+# Lancer le serveur de dev
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
