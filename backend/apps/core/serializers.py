@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Region, Province, Localite, Entite, Parc, Vehicule, TypeCout, CoutVehicule, Deplacement, UtilisationVehicule, ResponsableParc, ChefParcParc, VehiculeParc, EntiteParc, DeplacementAgent, DeplacementChauffeur, Responsable, Chauffeur, ChefParc
-from apps.authentication.serializers import AgentSerializer
+from authentication.serializers import AgentSerializer
 
 # Serializers pour la hiérarchie géographique
 class RegionSerializer(serializers.ModelSerializer):
@@ -35,6 +35,7 @@ class ParcSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 # Serializers pour les spécialisations d'Agent (Responsable, Chauffeur, ChefParc)
+# Note: Avec OneToOneField, chaque agent ne peut avoir qu'un seul profil de chaque type
 class ResponsableSerializer(serializers.ModelSerializer):
     agent_details = AgentSerializer(source='agent',read_only=True)
     class Meta:
@@ -105,6 +106,7 @@ class UtilisationVehiculeSerializer(serializers.ModelSerializer):
 class ResponsableParcSerializer(serializers.ModelSerializer):
     responsable_details = serializers.ReadOnlyField(source='responsable.agent.__str__')
     parc_localisation = serializers.ReadOnlyField(source='parc.localisation')
+    # Note: Avec OneToOneField, un agent ne peut avoir qu'un seul profil responsable
     class Meta:
         model = ResponsableParc
         fields = '__all__'
@@ -112,6 +114,7 @@ class ResponsableParcSerializer(serializers.ModelSerializer):
 class ChefParcParcSerializer(serializers.ModelSerializer):
     chef_parc_details = serializers.ReadOnlyField(source='chef_parc.agent.__str__')
     parc_localisation = serializers.ReadOnlyField(source='parc.localisation')
+    # Note: Avec OneToOneField, un agent ne peut avoir qu'un seul profil chef de parc
     class Meta:
         model = ChefParcParc
         fields = '__all__'

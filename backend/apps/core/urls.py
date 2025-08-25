@@ -1,6 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import RegionViewSet, ProvinceViewSet, LocaliteViewSet, EntiteViewSet, ParcViewSet, VehiculeViewSet, TypeCoutViewSet, CoutVehiculeViewSet, DeplacementViewSet, UtilisationVehiculeViewSet, ResponsableParcViewSet, ChefParcParcViewSet, VehiculeParcViewSet, EntiteParcViewSet, DeplacementAgentViewSet, DeplacementChauffeurViewSet, ResponsableViewSet, ChauffeurViewSet, ChefParcViewSet
+from .views import RegionViewSet, ProvinceViewSet, LocaliteViewSet,
+ EntiteViewSet, ParcViewSet, VehiculeViewSet, TypeCoutViewSet,
+  CoutVehiculeViewSet, DeplacementViewSet, UtilisationVehiculeViewSet,
+   ResponsableParcViewSet, ChefParcParcViewSet, VehiculeParcViewSet,
+    EntiteParcViewSet, DeplacementAgentViewSet, DeplacementChauffeurViewSet,
+     ResponsableViewSet, ChauffeurViewSet, ChefParcViewSet
 
 router = DefaultRouter()
 router.register(r'regions', RegionViewSet)

@@ -2,8 +2,8 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 import datetime
-from apps.core.models import Region, Province,Entite,Vehicule,TypeCout, CoutVehicule, Deplacement
-from apps.authentication.models import Agent # Import nécessaire 
+from core.models import Region, Province,Entite,Vehicule,TypeCout, CoutVehicule, Deplacement
+from authentication.models import Agent # Import nécessaire 
 
 class RegionModelTest(TestCase):
     def test_region_creation(self):

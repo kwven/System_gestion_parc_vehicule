@@ -1,9 +1,9 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from apps.core.serializers import VehiculeSerializer, DeplacementSerializer,CoutVehiculeSerializer
-from apps.core.models import Vehicule, TypeCout, CoutVehicule
-from apps.authentication.models import Agent
-from apps.core.models import Entite # Nécessaire pour Agent
+from core.serializers import VehiculeSerializer, DeplacementSerializer,CoutVehiculeSerializer
+from core.models import Vehicule, TypeCout, CoutVehicule
+from authentication.models import Agent
+from core.models import Entite # Nécessaire pour Agent
 from django.utils import timezone
 import datetime
 

@@ -93,13 +93,13 @@ class Parc(models.Model):
         return f"Parc à {self.localisation} ({self.localite.nom})"
     
 # --- 3. Ressources humaines (Spécialisations d'Agent) ---
-# Ces modèles ont une relation OneToOne avec Agent 
-# Ici, nous utilisons l'héritage multi-table en Django, où chaque spécialisation a sa propre table et une FK vers la PK de Agent.
+# Ces modèles permettent maintenant à un agent d'avoir plusieurs rôles simultanément
+# Changement de OneToOne vers ForeignKey pour permettre les rôles multiples
 
 # Correspond à la table Responsable
 class Responsable(models.Model):
-    # id INTEGER PRIMARY KEY -> OneToOneField avec Agent(id)
-    agent = models.OneToOneField('authentication.Agent',on_delete=models.CASCADE,primary_key=True,related_name='responsable_profile',verbose_name="Agent")
+    # Relation OneToOneField avec Agent pour permettre un seul profil responsable
+    agent = models.OneToOneField('authentication.Agent',on_delete=models.CASCADE,related_name='responsable',verbose_name="Agent")
     NIVEAU_RESPONSABILITE_CHOICES = [
     ('Local', 'Local'),
     ('Provincial', 'Provincial'),
@@ -109,39 +109,55 @@ class Responsable(models.Model):
     niveau_responsabilite = models.CharField(max_length=50,choices=NIVEAU_RESPONSABILITE_CHOICES,null=True,blank=True,verbose_name="Niveau de responsabilité")
     date_nomination = models.DateField(default=timezone.now, verbose_name="Date de nomination")
     budget_autorise = models.DecimalField(max_digits=12,decimal_places=2,default=0.00,verbose_name="Budget autorisé",validators=[MinValueValidator(0.00)])
+    
     class Meta:
         db_table = 'core_responsable'
         verbose_name = 'Responsable'
         verbose_name_plural = 'Responsables'
-    # Contraintes CHECK (gérées par choices et MinValueValidator)
+        # Un agent ne peut avoir qu'un seul profil responsable
+    
     def __str__(self):
-        return f"Responsable {self.agent.nom} {self.agent.prenom}"
+        return f"Responsable {self.agent.nom} {self.agent.prenom} ({self.niveau_responsabilite})"
+    
+    def clean(self):
+        super().clean()
+        # Validation: date de nomination ne peut pas être dans le futur
+        if self.date_nomination and self.date_nomination > timezone.now().date():
+            raise ValidationError({'date_nomination': "La date de nomination ne peut pas être dans le futur."})
 
 # Correspond à la table Chauffeur
 class Chauffeur(models.Model):
-    # id INTEGER PRIMARY KEY -> OneToOneField avec Agent(id)
-    agent = models.OneToOneField('authentication.Agent',on_delete=models.CASCADE,primary_key=True,related_name='chauffeur_profile',verbose_name="Agent")
+    # Relation OneToOneField avec Agent pour permettre un seul profil chauffeur
+    agent = models.OneToOneField('authentication.Agent',on_delete=models.CASCADE,related_name='chauffeur',verbose_name="Agent")
     numero_permis = models.CharField(max_length=50,unique=True,null=False,blank=False,verbose_name="Numéro de permis")
     date_obtention_permis = models.DateField(null=False,blank=False,verbose_name="Date d'obtention du permis")
     TYPE_PERMIS_CHOICES = [('A', 'A'), ('A1', 'A1'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E','E')]
     type_permis = models.CharField(max_length=10,choices=TYPE_PERMIS_CHOICES,null=True,blank=True,verbose_name="Type de permis",validators=[validate_non_empty_trimmed])
     date_expiration_permis = models.DateField(null=True, blank=True,verbose_name="Date d'expiration du permis")
     nombre_points = models.IntegerField(default=12,verbose_name="Nombre de points",validators=[MinValueValidator(0), MaxValueValidator(12)])
+    
     class Meta:
         db_table = 'core_chauffeur'
         verbose_name = 'Chauffeur'
         verbose_name_plural = 'Chauffeurs'
+        # Un agent ne peut avoir qu'un seul profil chauffeur
+        
     def __str__(self):
         return f"Chauffeur {self.agent.nom} {self.agent.prenom}"
+        
     def clean(self):
         super().clean()
         if self.date_obtention_permis and self.date_obtention_permis > timezone.now().date():
             raise ValidationError({'date_obtention_permis': "La date d'obtention du permis ne peut pas être dans le futur."})
+        
+        # Validation: date d'expiration doit être après date d'obtention
+        if self.date_expiration_permis and self.date_obtention_permis and self.date_expiration_permis <= self.date_obtention_permis:
+            raise ValidationError({'date_expiration_permis': "La date d'expiration doit être postérieure à la date d'obtention."})
 
 # Correspond à la table ChefParc
 class ChefParc(models.Model):
-    # id INTEGER PRIMARY KEY -> OneToOneField avec Agent(id)
-    agent = models.OneToOneField('authentication.Agent',on_delete=models.CASCADE,primary_key=True,related_name='chefparc_profile',verbose_name="Agent")
+    # Relation OneToOneField avec Agent pour permettre un seul profil chef de parc
+    agent = models.OneToOneField('authentication.Agent',on_delete=models.CASCADE,related_name='chef_parc',verbose_name="Agent")
     date_nomination = models.DateField(default=timezone.now, verbose_name="Date de nomination") 
     NIVEAU_AUTORITE_CHOICES = [
     ('Local', 'Local'),
@@ -149,16 +165,15 @@ class ChefParc(models.Model):
     ('Régional', 'Régional'),]
     niveau_autorite = models.CharField(max_length=50,choices=NIVEAU_AUTORITE_CHOICES,null=True,blank=True,verbose_name="Niveau d'autorité")
     formation_securite = models.BooleanField(default=False,verbose_name="Formation sécurité")
+    
     class Meta:
         db_table = 'core_chefparc'
         verbose_name = 'Chef de Parc'
         verbose_name_plural = 'Chefs de Parc'
+        # Un agent ne peut avoir qu'un seul profil chef de parc
+        
     def __str__(self):
-        return f"Chef de Parc {self.agent.nom} {self.agent.prenom}"
-    def clean(self):
-        super().clean()
-        if self.date_nomination and self.date_nomination > timezone.now().date():
-            raise ValidationError({'date_nomination': "La date de nomination ne peut pas être dans le futur."})
+        return f"Chef de Parc {self.agent.nom} {self.agent.prenom} ({self.niveau_autorite})"
         
 # --- 4. Gestion des véhicules ---
 # Correspond à la table Vehicule
@@ -315,12 +330,28 @@ class ResponsableParc(models.Model):
         super().clean()
         if self.date_fin and self.date_debut and self.date_fin < self.date_debut:
             raise ValidationError({'date_fin': "La date de fin ne peut pas être antérieure à la date de début."})
+        
+        # Validation: empêcher les chevauchements de dates pour le même parc
+        if self.parc_id:
+            overlapping = ResponsableParc.objects.filter(
+                parc=self.parc
+            ).exclude(pk=self.pk)
+            
+            for resp_parc in overlapping:
+                # Si l'affectation existante n'a pas de date de fin (active indéfiniment)
+                if resp_parc.date_fin is None:
+                    if self.date_debut <= resp_parc.date_debut:
+                        raise ValidationError(f"Chevauchement détecté: le parc a déjà un responsable actif depuis le {resp_parc.date_debut}")
+                # Si l'affectation existante a une date de fin
+                elif resp_parc.date_fin >= self.date_debut:
+                    if self.date_fin is None or self.date_fin >= resp_parc.date_debut:
+                        raise ValidationError(f"Chevauchement détecté avec l'affectation du {resp_parc.date_debut} au {resp_parc.date_fin} pour le parc")
 # Correspond à la table ChefParcParc
 class ChefParcParc(models.Model):
     chef_parc = models.ForeignKey(ChefParc,on_delete=models.CASCADE,null=False,blank=False,verbose_name="Chef de Parc")
     parc = models.ForeignKey(Parc,on_delete=models.CASCADE,null=False,blank=False,verbose_name="Parc")
     date_nomination = models.DateField(default=timezone.now,null=False,blank=False,verbose_name="Date de nomination")
-    date_fin = models.DateField(null=True, blank=True, verbose_name="Date defin")
+    date_fin = models.DateField(null=True, blank=True, verbose_name="Date de fin")
     class Meta:
         db_table = 'core_chef_parc_parc'
         unique_together = ('chef_parc', 'parc', 'date_nomination')
@@ -332,6 +363,22 @@ class ChefParcParc(models.Model):
         super().clean()
         if self.date_fin and self.date_nomination and self.date_fin < self.date_nomination:
             raise ValidationError({'date_fin': "La date de fin ne peut pas être antérieure à la date de nomination."})
+        
+        # Validation: empêcher les chevauchements de dates pour le même parc
+        if self.parc_id:
+            overlapping = ChefParcParc.objects.filter(
+                parc=self.parc
+            ).exclude(pk=self.pk)
+            
+            for chef_parc_parc in overlapping:
+                # Si l'affectation existante n'a pas de date de fin (active indéfiniment)
+                if chef_parc_parc.date_fin is None:
+                    if self.date_nomination <= chef_parc_parc.date_nomination:
+                        raise ValidationError(f"Chevauchement détecté: le parc a déjà un chef de parc actif depuis le {chef_parc_parc.date_nomination}")
+                # Si l'affectation existante a une date de fin
+                elif chef_parc_parc.date_fin >= self.date_nomination:
+                    if self.date_fin is None or self.date_fin >= chef_parc_parc.date_nomination:
+                        raise ValidationError(f"Chevauchement détecté avec l'affectation du {chef_parc_parc.date_nomination} au {chef_parc_parc.date_fin} pour le parc")
 # Correspond à la table VehiculeParc
 class VehiculeParc(models.Model):
     vehicule = models.ForeignKey(Vehicule,on_delete=models.CASCADE,null=False,blank=False,verbose_name="Véhicule")

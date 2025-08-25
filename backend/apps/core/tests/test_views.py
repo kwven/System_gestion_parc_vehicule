@@ -1,9 +1,9 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
-from apps.core.models import Vehicule, Deplacement, TypeCout, CoutVehicule,UtilisationVehicule
-from apps.authentication.models import Agent, User
-from apps.core.models import Entite, Chauffeur # Import nécessaire
+from core.models import Vehicule, Deplacement, TypeCout, CoutVehicule,UtilisationVehicule
+from authentication.models import Agent, User
+from core.models import Entite, Chauffeur # Import nécessaire
 from django.utils import timezone
 import datetime
 from decimal import Decimal
