@@ -1,8 +1,8 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
-from apps.authentication.models import Agent, User
-from apps.core.models import Entite 
+from authentication.models import Agent, User
+from core.models import Entite 
 from datetime import date, timedelta
 
 class AgentAPITest(APITestCase):

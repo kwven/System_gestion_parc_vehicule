@@ -1,9 +1,9 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
-from apps.authentication.serializers import AgentSerializer, UserSerializer
-from apps.authentication.models import Agent, User
-from apps.core.models import Entite # Nécessaire pour Agent
+from authentication.serializers import AgentSerializer, UserSerializer
+from authentication.models import Agent, User
+from core.models import Entite # Nécessaire pour Agent
 
 class AgentSerializerTest(APITestCase):
     def setUp(self):

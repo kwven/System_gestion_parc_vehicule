@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from apps.authentication.models import Agent, User
-from apps.core.models import Entite 
+from authentication.models import Agent, User
+from core.models import Entite 
 import datetime
 import time
 
